@@ -3,6 +3,7 @@ import {
   ResizablePanelGroup,
   ResizableHandle,
 } from "@/components/ui/resizable" 
+import { SummaryPanel } from "@/components/SummaryPanel"
 
 function App() {
   return (
@@ -24,9 +25,7 @@ function App() {
 
         {/* Right Panel */}
         <ResizablePanel className="min-h-0" minSize={30} defaultSize={55}>
-          <div className="flex h-full items-center justify-center p-6">
-            <span className="font-semibold">Right Panel (Tabs)</span>
-          </div>
+          <SummaryPanel />
         </ResizablePanel>
 
       </ResizablePanelGroup>
