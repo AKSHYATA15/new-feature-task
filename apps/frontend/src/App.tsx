@@ -4,8 +4,11 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable" 
 import { SummaryPanel } from "@/components/SummaryPanel"
+import VideoPlayer from "@/components/VideoPlayer"
+import { useRef } from "react"
 
 function App() {
+  const videoPlayerRef = useRef(null)
   return (
     <div className="h-screen w-full flex flex-col overflow-hidden bg-gray-100">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
@@ -17,7 +20,11 @@ function App() {
           defaultSize={45}
         >
           <div className="flex h-full items-center justify-center p-6">
-            <span className="font-semibold">Left Panel (Viewer)</span>
+            <VideoPlayer
+              ref={videoPlayerRef}
+              videoId="M20S_eGf-wQ" 
+              videoTitle="10 Java Interview Questions & Answers"
+            />
           </div>
         </ResizablePanel>
 
