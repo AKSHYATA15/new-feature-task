@@ -15,6 +15,7 @@ import {
   Network,
   StickyNote
 } from "lucide-react"
+import { RoadmapTab } from "@/components/RoadmapTab"
 
 export function SummaryPanel() {
   return (
@@ -106,7 +107,7 @@ export function SummaryPanel() {
         </TabsContent>
         
         <TabsContent value="roadmap" className="flex-1 overflow-y-auto p-6">
-          <p>Roadmap content will go here.</p>
+          <RoadmapTab />
         </TabsContent>
 
         <TabsContent value="notes" className="flex-1 overflow-y-auto p-6">
