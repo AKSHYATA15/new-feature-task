@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/tabs"
 import { DocumentChatWindow } from "@/components/DocumentChatWindow"
 import { MCQTab } from "@/components/MCQTab" 
+import { FAQTab } from "@/components/FAQTab"
 import {
   BookText,
   MessageSquare,
@@ -97,7 +98,7 @@ export function SummaryPanel() {
         </TabsContent>
 
         <TabsContent value="faq" className="flex-1 overflow-y-auto p-6">
-          <p>FAQ content will go here.</p>
+          <FAQTab />
         </TabsContent>
 
         <TabsContent value="mcq" className="flex-1 overflow-hidden">
