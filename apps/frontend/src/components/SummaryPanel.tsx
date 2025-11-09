@@ -7,6 +7,7 @@ import {
 import { DocumentChatWindow } from "@/components/DocumentChatWindow"
 import { MCQTab } from "@/components/MCQTab" 
 import { FAQTab } from "@/components/FAQTab"
+import { NotesTab } from "@/components/NotesTab"
 import {
   BookText,
   MessageSquare,
@@ -111,7 +112,7 @@ export function SummaryPanel() {
         </TabsContent>
 
         <TabsContent value="notes" className="flex-1 overflow-y-auto p-6">
-          <p>Notes content will go here.</p>
+          <NotesTab />
         </TabsContent>
       </Tabs>
     </div>
