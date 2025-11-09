@@ -4,6 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { DocumentChatWindow } from "@/components/DocumentChatWindow"
 
 export function SummaryPanel() {
   return (
@@ -69,7 +70,7 @@ export function SummaryPanel() {
 
         {/* This is the content for the "Chat" tab */}
         <TabsContent value="chat" className="flex-1 overflow-y-auto p-6">
-          <p>Chat UI will go here.</p>
+          <DocumentChatWindow />
         </TabsContent>
 
         {/* This is the content for the "FAQ" tab */}
