@@ -4,21 +4,49 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable" 
 import { SummaryPanel } from "@/components/SummaryPanel"
+import VideoPlayer, { type VideoPlayerRef } from "@/components/VideoPlayer"
+import { useRef } from "react"
+import TranscriptionViewer from "@/components/TranscriptionViewer"
+import { Sidebar } from "@/components/Sidebar"
 
 function App() {
+  const videoPlayerRef = useRef<VideoPlayerRef>(null)
+  const handleSeekTo = (seconds: number) => {
+    videoPlayerRef.current?.seekTo(seconds)
+  }
   return (
-    <div className="h-screen w-full flex flex-col overflow-hidden bg-gray-100">
+    <div className="h-screen w-full flex overflow-hidden bg-gray-100">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         
         {/* Left Panel */}
         <ResizablePanel
-          className="min-h-0 bg-white" 
+          className="min-h-0 bg-white"
           minSize={30}
           defaultSize={45}
         >
-          <div className="flex h-full items-center justify-center p-6">
-            <span className="font-semibold">Left Panel (Viewer)</span>
-          </div>
+          <ResizablePanelGroup direction="vertical">
+
+            {/* Top (Video) */}
+            <ResizablePanel defaultSize={50} minSize={30}>
+              <div className="h-full overflow-y-auto p-6">
+                <VideoPlayer
+                  ref={videoPlayerRef}
+                  videoId="O5xeyoRL95U"
+                  videoTitle="10 Java Interview Questions & Answers"
+                />
+              </div>
+            </ResizablePanel>
+
+            <ResizableHandle withHandle />
+
+            {/* Bottom (Transcript) */}
+            <ResizablePanel defaultSize={50} minSize={30}>
+              <TranscriptionViewer onSeekTo={handleSeekTo} />
+            </ResizablePanel>
+
+          </ResizablePanelGroup>
         </ResizablePanel>
 
         <ResizableHandle withHandle />
@@ -29,6 +57,7 @@ function App() {
         </ResizablePanel>
 
       </ResizablePanelGroup>
+      </div>
     </div>
   )
 }

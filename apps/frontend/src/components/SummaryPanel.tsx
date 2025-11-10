@@ -4,21 +4,51 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { DocumentChatWindow } from "@/components/DocumentChatWindow"
+import { MCQTab } from "@/components/MCQTab" 
+import { FAQTab } from "@/components/FAQTab"
+import { NotesTab } from "@/components/NotesTab"
+import {
+  BookText,
+  MessageSquare,
+  HelpCircle,
+  ClipboardCheck,
+  Network,
+  StickyNote
+} from "lucide-react"
+import { RoadmapTab } from "@/components/RoadmapTab"
 
 export function SummaryPanel() {
   return (
     <div className="h-full w-full flex flex-col">
       <Tabs defaultValue="summary" className="w-full h-full flex flex-col">
-        {/* These are the tab buttons */}
         <TabsList className="mx-4 mt-4 bg-gray-200">
-          <TabsTrigger value="summary">Summary</TabsTrigger>
-          <TabsTrigger value="chat">Chat</TabsTrigger>
-          <TabsTrigger value="faq">FAQ's</TabsTrigger>
-          <TabsTrigger value="mcq">MCQ</TabsTrigger>
-          <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+          <TabsTrigger value="summary">
+            <BookText className="h-4 w-4 mr-2" />
+            Summary
+          </TabsTrigger>
+          <TabsTrigger value="chat">
+            <MessageSquare className="h-4 w-4 mr-2" />
+            Chat
+          </TabsTrigger>
+          <TabsTrigger value="faq">
+            <HelpCircle className="h-4 w-4 mr-2" />
+            FAQ'S
+          </TabsTrigger>
+          <TabsTrigger value="mcq">
+            <ClipboardCheck className="h-4 w-4 mr-2" />
+            MCQ
+          </TabsTrigger>
+          <TabsTrigger value="roadmap">
+            <Network className="h-4 w-4 mr-2" />
+            Roadmap
+          </TabsTrigger>
+          <TabsTrigger value="notes">
+            <StickyNote className="h-4 w-4 mr-2" />
+            Notes
+          </TabsTrigger>
         </TabsList>
 
-        {/* This is the content for the "Summary" tab */}
         <TabsContent
           value="summary"
           className="flex-1 overflow-y-auto p-6 text-sm"
@@ -29,7 +59,6 @@ export function SummaryPanel() {
               and abstract classes, crucial concepts for object-oriented
               programming and interview preparation.
             </p>
-
             <div>
               <h3 className="font-semibold text-gray-900 mb-2 text-base">
                 1. Java Interfaces
@@ -50,7 +79,6 @@ export function SummaryPanel() {
                 must provide implementations for all abstract methods.
               </p>
             </div>
-
             <div>
               <h3 className="font-semibold text-gray-900 mb-2 text-base">
                 2. Abstract Classes
@@ -67,26 +95,25 @@ export function SummaryPanel() {
           </div>
         </TabsContent>
 
-        {/* This is the content for the "Chat" tab */}
-        <TabsContent value="chat" className="flex-1 overflow-y-auto p-6">
-          <p>Chat UI will go here.</p>
+        <TabsContent value="chat" className="flex-1 overflow-hidden">
+          <DocumentChatWindow />
         </TabsContent>
 
-        {/* This is the content for the "FAQ" tab */}
         <TabsContent value="faq" className="flex-1 overflow-y-auto p-6">
-          <p>FAQ content will go here.</p>
+          <FAQTab />
         </TabsContent>
 
-        {/* This is the content for the "MCQ" tab */}
-        <TabsContent value="mcq" className="flex-1 overflow-y-auto p-6">
-          <p>MCQ content will go here.</p>
+        <TabsContent value="mcq" className="flex-1 overflow-hidden">
+          <MCQTab />
         </TabsContent>
         
-        {/* This is the content for the "Roadmap" tab */}
         <TabsContent value="roadmap" className="flex-1 overflow-y-auto p-6">
-          <p>Roadmap content will go here.</p>
+          <RoadmapTab />
         </TabsContent>
 
+        <TabsContent value="notes" className="flex-1 overflow-y-auto p-6">
+          <NotesTab />
+        </TabsContent>
       </Tabs>
     </div>
   )
