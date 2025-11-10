@@ -1,6 +1,6 @@
 import "dotenv/config"
-import app from "./src/index.js"
-import { db } from "./src/db/client.js"
+import app from "./src/index"
+import { db } from "./src/db/client"
 import { sql } from "drizzle-orm"
 
 const port = process.env.PORT || 8000
