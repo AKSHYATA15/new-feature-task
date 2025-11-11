@@ -1,6 +1,7 @@
 import { db } from "../db/client"
 import { documents, transcripts } from "../db/schema/main"
 import { fetchTranscript } from "youtube-transcript-plus"
+import { decode } from "html-entities"
 
 export async function processDocument(sourceUrl: string, sourceType: "pdf" | "youtube") {
   console.log(`[service]: 1. Creating document record...`)
@@ -44,7 +45,9 @@ export async function processDocument(sourceUrl: string, sourceType: "pdf" | "yo
 async function getYouTubeTranscript(url: string): Promise<string> {
   try {
     const transcript = await fetchTranscript(url)
-    return transcript.map((segment: any) => segment.text).join(" ")
+    return transcript
+      .map((segment: any) => decode(decode(segment.text))) 
+      .join(" ")
   } catch (error: any) {
     console.error("Error fetching YouTube transcript:", error)
     throw new Error(`Failed to fetch transcript: ${error.message}`)
