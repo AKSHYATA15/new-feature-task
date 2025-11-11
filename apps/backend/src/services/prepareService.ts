@@ -1,7 +1,8 @@
 import { db } from "../db/client"
-import { documents, transcripts } from "../db/schema/main"
+import { documents, transcripts , summaries } from "../db/schema/main"
 import { fetchTranscript } from "youtube-transcript-plus"
 import { decode } from "html-entities"
+import * as geminiService from "./geminiService"
 
 export async function processDocument(sourceUrl: string, sourceType: "pdf" | "youtube") {
   console.log(`[service]: 1. Creating document record...`)
@@ -38,6 +39,14 @@ export async function processDocument(sourceUrl: string, sourceType: "pdf" | "yo
   })
 
   console.log(`[service]: 5. Transcript saved!`)
+  const summaryText = await geminiService.generateSummary(rawText)
+
+  await db.insert(summaries).values({
+    documentId: document.id,
+    text: summaryText,
+    modelName: "gemini",
+  })
+  console.log(`[service]: 6. Summary saved!`)
 
   return document
 }
