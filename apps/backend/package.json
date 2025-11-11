@@ -20,7 +20,9 @@
     "drizzle-orm": "^0.44.7",
     "express": "^5.1.0",
     "postgres": "^3.4.7",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "youtube-transcript-plus": "^1.1.1",
+    "youtubei.js": "^16.0.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",

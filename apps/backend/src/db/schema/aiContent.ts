@@ -42,3 +42,10 @@ export const roadmapNodes = pgTable("roadmap_nodes", {
   position: jsonb("position").$type<{ x: number; y: number }>().notNull(),
   style: jsonb("style"),
 })
+
+export const transcripts = pgTable("transcripts", {
+  id: serial("id").primaryKey(),
+  documentId: uuid("document_id").references(() => documents.id).unique(),
+  fullText: text("full_text"),
+  createdAt: timestamp("created_at").defaultNow(),
+})
