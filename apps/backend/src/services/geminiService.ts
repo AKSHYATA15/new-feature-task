@@ -94,3 +94,100 @@ ${text}
     throw new Error("Failed to generate FAQs")
   }
 }
+
+export async function generateMCQs(text: string) {
+  console.log("[gemini]: Generating MCQs...")
+
+  const prompt = `You are an expert quiz creator. Your task is to generate 5 multiple-choice questions (MCQs) to test a user's understanding of the provided text.
+
+  Your explanations for the correct answer must be confident, direct, and factual.
+**Do not** use phrases like "According to the transcript...", "The text states that...", or any other timid, referencing language.
+
+Return your answer ONLY as a valid JSON array of objects, with no other text.
+Each object in the array must have four keys:
+1. "question": The question.
+2. "options": An array of objects, each with an "id" (A, B, C, D) and "text".
+3. "correctOption": The "id" (A, B, C, or D) of the correct option.
+4. "explanation": A brief explanation for why that answer is correct.
+
+Example format:
+[
+  {
+    "question": "What is the primary topic?",
+    "options": [
+      { "id": "A", "text": "Topic 1" },
+      { "id": "B", "text": "Topic 2" }
+    ],
+    "correctOption": "B",
+    "explanation": "Topic 2 is correct because..."
+  }
+]
+
+Analyze this transcript to generate the questions:
+"""
+${text}
+"""`
+
+  try {
+    const result = await model.generateContent(prompt)
+    const response = await result.response
+    const jsonText = response.text()
+
+    const cleanJson = jsonText.replace(/```json/g, "").replace(/```/g, "").trim()
+
+    console.log("[gemini]: MCQs generated successfully!")
+    return JSON.parse(cleanJson) 
+  } catch (error) {
+    console.error("Error generating MCQs from Gemini:", error)
+    throw new Error("Failed to generate MCQs")
+  }
+}
+
+export async function generateRoadmap(text: string): Promise<{ nodes: any[], edges: any[] }> {
+  console.log("[gemini]: Generating roadmap...")
+
+  const prompt = `You are an expert curriculum designer and data architect. Your task is to analyze the following transcript and generate a conceptual roadmap as a mind map.
+
+Return your answer ONLY as a single valid JSON object, with no other text.
+The JSON object must have two top-level keys: "nodes" and "edges".
+
+1.  "nodes" key: The value must be an array of node objects. Each node object must have:
+    * "id": A unique string for the node (e.g., "1", "2", "3.1").
+    * "data": An object with a "label" key (e.g., { "label": "Main Topic" }).
+    * "position": An object with "x" and "y" coordinates (e.g., { "x": 0, "y": 0 }).
+    * "style": An object with "borderColor" and "borderWidth" (e.g., { "borderColor": "#8A2BE2", "borderWidth": 2 }).
+
+2.  "edges" key: The value must be an array of edge objects. Each edge object must have:
+    * "id": A unique string for the edge (e.g., "e1-2").
+    * "source": The "id" of the parent node.
+    * "target": The "id" of the child node.
+
+**Instructions for Content:**
+* The root node (id: "1") should be the main title of the transcript.
+* Level 2 nodes should be the main headings.
+* Level 3 nodes should be the key points under those headings.
+* Assign "borderColor" based on the level:
+    * Level 1: "#8A2BE2" (Purple)
+    * Level 2: "#4169E1" (Blue)
+    * Level 3: "#2E8B57" (Green)
+* Arrange the nodes in a clear top-down hierarchy with appropriate "x" and "y" positions.
+
+Analyze this transcript to generate the roadmap:
+"""
+${text}
+"""`
+
+  try {
+    const result = await model.generateContent(prompt)
+    const response = await result.response
+    const jsonText = response.text()
+
+    const cleanJson = jsonText.replace(/```json/g, "").replace(/```/g, "").trim()
+
+    console.log("[gemini]: Roadmap generated successfully!")
+    return JSON.parse(cleanJson) 
+  } catch (error) {
+    console.error("Error generating roadmap from Gemini:", error)
+    throw new Error("Failed to generate roadmap")
+  }
+}
