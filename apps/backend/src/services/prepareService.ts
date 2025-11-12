@@ -1,5 +1,5 @@
 import { db } from "../db/client"
-import { documents, transcripts , summaries, faqs} from "../db/schema/main"
+import { documents, transcripts , summaries, faqs , mcqs} from "../db/schema/main"
 import { fetchTranscript } from "youtube-transcript-plus"
 import { decode } from "html-entities"
 import * as geminiService from "./geminiService"
@@ -59,6 +59,24 @@ export async function processDocument(sourceUrl: string, sourceType: "pdf" | "yo
 
   await db.insert(faqs).values(faqsToInsert)
   console.log(`[service]: 7. FAQs saved!`)
+
+  const mcqList = await geminiService.generateMCQs(rawText)
+
+  const mcqsToInsert = mcqList.map((mcq: {
+    question: string,
+    options: any, 
+    correctOption: string,
+    explanation: string
+  }) => ({
+    documentId: document.id,
+    question: mcq.question,
+    options: mcq.options,
+    correctOption: mcq.correctOption,
+    explanation: mcq.explanation,
+  }))
+
+  await db.insert(mcqs).values(mcqsToInsert)
+  console.log(`[service]: 8. MCQs saved!`)
 
   return document
 }

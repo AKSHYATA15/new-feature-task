@@ -94,3 +94,48 @@ ${text}
     throw new Error("Failed to generate FAQs")
   }
 }
+
+export async function generateMCQs(text: string) {
+  console.log("[gemini]: Generating MCQs...")
+
+  const prompt = `You are an expert quiz creator. Your task is to generate 5 multiple-choice questions (MCQs) to test a user's understanding of the provided text.
+
+Return your answer ONLY as a valid JSON array of objects, with no other text.
+Each object in the array must have four keys:
+1. "question": The question.
+2. "options": An array of objects, each with an "id" (A, B, C, D) and "text".
+3. "correctOption": The "id" (A, B, C, or D) of the correct option.
+4. "explanation": A brief explanation for why that answer is correct.
+
+Example format:
+[
+  {
+    "question": "What is the primary topic?",
+    "options": [
+      { "id": "A", "text": "Topic 1" },
+      { "id": "B", "text": "Topic 2" }
+    ],
+    "correctOption": "B",
+    "explanation": "Topic 2 is correct because..."
+  }
+]
+
+Analyze this transcript to generate the questions:
+"""
+${text}
+"""`
+
+  try {
+    const result = await model.generateContent(prompt)
+    const response = await result.response
+    const jsonText = response.text()
+
+    const cleanJson = jsonText.replace(/```json/g, "").replace(/```/g, "").trim()
+
+    console.log("[gemini]: MCQs generated successfully!")
+    return JSON.parse(cleanJson) 
+  } catch (error) {
+    console.error("Error generating MCQs from Gemini:", error)
+    throw new Error("Failed to generate MCQs")
+  }
+}
