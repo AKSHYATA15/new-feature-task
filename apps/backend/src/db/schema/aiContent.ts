@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, timestamp, jsonb, serial, integer } from "drizzle-orm/pg-core"
+import { pgTable, text, uuid, timestamp, jsonb, serial, integer, primaryKey } from "drizzle-orm/pg-core"
 import { documents } from "./documents"
 
 export const summaries = pgTable("summaries", {
@@ -36,14 +36,17 @@ export const roadmaps = pgTable("roadmaps", {
 })
 
 export const roadmapNodes = pgTable("roadmap_nodes", {
-  id: text("id").primaryKey(),
+  id: text("id").notNull(), 
   roadmapId: integer("roadmap_id").references(() => roadmaps.id),
-  parentId: text("parent_id"),
+  parentId: text("parent_id"), 
   label: text("label").notNull(),
   position: jsonb("position").$type<{ x: number; y: number }>().notNull(),
   style: jsonb("style"),
+}, (table) => {
+  return {
+    pk: primaryKey({ columns: [table.roadmapId, table.id] }),
+  }
 })
-
 export const transcripts = pgTable("transcripts", {
   id: serial("id").primaryKey(),
   documentId: uuid("document_id").references(() => documents.id).unique(),

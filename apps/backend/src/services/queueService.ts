@@ -17,7 +17,3 @@ connection.on('connect', () => console.log('[redis]: Connected to Upstash!'))
 connection.on('error', (err) => console.error('[redis]: Connection error', err))
 
 export const prepareQueue = new Queue("prepare-queue", { connection })
-
-export function setupWorker() {
-  console.log("[worker]: Worker setup will go here...")
-}
