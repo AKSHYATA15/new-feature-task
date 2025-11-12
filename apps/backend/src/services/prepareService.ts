@@ -1,5 +1,5 @@
 import { db } from "../db/client"
-import { documents, transcripts , summaries } from "../db/schema/main"
+import { documents, transcripts , summaries, faqs} from "../db/schema/main"
 import { fetchTranscript } from "youtube-transcript-plus"
 import { decode } from "html-entities"
 import * as geminiService from "./geminiService"
@@ -47,6 +47,18 @@ export async function processDocument(sourceUrl: string, sourceType: "pdf" | "yo
     modelName: "gemini",
   })
   console.log(`[service]: 6. Summary saved!`)
+
+  const faqList = await geminiService.generateFAQs(rawText)
+  
+  const faqsToInsert = faqList.map((faq: { question: string, answer: string, explanation: string }) => ({
+    documentId: document.id,
+    question: faq.question,
+    answer: faq.answer,
+    explanation: faq.explanation, 
+  }))
+
+  await db.insert(faqs).values(faqsToInsert)
+  console.log(`[service]: 7. FAQs saved!`)
 
   return document
 }

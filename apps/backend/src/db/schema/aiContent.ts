@@ -14,6 +14,7 @@ export const faqs = pgTable("faqs", {
   documentId: uuid("document_id").references(() => documents.id),
   question: text("question").notNull(),
   answer: text("answer").notNull(),
+  explanation: text("explanation"), 
   createdAt: timestamp("created_at").defaultNow(),
 })
 

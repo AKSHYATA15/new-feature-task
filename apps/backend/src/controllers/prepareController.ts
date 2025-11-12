@@ -19,7 +19,6 @@ export async function prepareDocument(req: Request, res: Response) {
   } catch (error: any) {
     console.error("Error in prepareDocument controller:", error)
     
-    // This is the new part. We send the *actual* error message to the frontend.
     res.status(500).json({ 
       error: "Internal server error",
       message: error.message 
