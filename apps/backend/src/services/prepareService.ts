@@ -1,10 +1,7 @@
 import { db } from "../db/client"
-import { documents, transcripts , summaries, faqs , mcqs , roadmaps, roadmapNodes} from "../db/schema/main"
-import { fetchTranscript } from "youtube-transcript-plus"
-import { decode } from "html-entities"
-import * as geminiService from "./geminiService"
+import { documents } from "../db/schema/main"
 
-export async function processDocument(sourceUrl: string, sourceType: "pdf" | "youtube") {
+export async function createDocument(sourceUrl: string, sourceType: "pdf" | "youtube") {
   console.log(`[service]: 1. Creating document record...`)
 
   const newDocument = await db
@@ -18,103 +15,6 @@ export async function processDocument(sourceUrl: string, sourceType: "pdf" | "yo
 
   const document = newDocument[0]
   console.log(`[service]: 2. Document record created with ID: ${document.id}`)
-
-  let rawText = ""
-  if (sourceType === "youtube") {
-    console.log(`[service]: 3. Fetching YouTube transcript...`)
-    rawText = await getYouTubeTranscript(sourceUrl)
-  } else {
-    console.log(`[service]: 3. PDF processing not yet implemented.`)
-    rawText = "PDF text would go here."
-  }
-
-  if (!rawText || rawText.trim() === "") {
-    throw new Error("Failed to extract text from the document.")
-  }
-
-  console.log(`[service]: 4. Saving raw text to 'transcripts' table...`)
-  await db.insert(transcripts).values({
-    documentId: document.id,
-    fullText: rawText,
-  })
-
-  console.log(`[service]: 5. Transcript saved!`)
-  const summaryText = await geminiService.generateSummary(rawText)
-
-  await db.insert(summaries).values({
-    documentId: document.id,
-    text: summaryText,
-    modelName: "gemini",
-  })
-  console.log(`[service]: 6. Summary saved!`)
-
-  const faqList = await geminiService.generateFAQs(rawText)
   
-  const faqsToInsert = faqList.map((faq: { question: string, answer: string, explanation: string }) => ({
-    documentId: document.id,
-    question: faq.question,
-    answer: faq.answer,
-    explanation: faq.explanation, 
-  }))
-
-  await db.insert(faqs).values(faqsToInsert)
-  console.log(`[service]: 7. FAQs saved!`)
-
-  const mcqList = await geminiService.generateMCQs(rawText)
-
-  const mcqsToInsert = mcqList.map((mcq: {
-    question: string,
-    options: any, 
-    correctOption: string,
-    explanation: string
-  }) => ({
-    documentId: document.id,
-    question: mcq.question,
-    options: mcq.options,
-    correctOption: mcq.correctOption,
-    explanation: mcq.explanation,
-  }))
-
-  await db.insert(mcqs).values(mcqsToInsert)
-  console.log(`[service]: 8. MCQs saved!`)
-
-  const roadmapData = await geminiService.generateRoadmap(rawText)
-
-  const newRoadmap = await db.insert(roadmaps).values({
-    documentId: document.id,
-    title: "Generated Roadmap", 
-  }).returning({ id: roadmaps.id })
-  
-  const roadmapId = newRoadmap[0].id
-
-  const nodesToInsert = roadmapData.nodes.map((node: {
-    id: string,
-    data: { label: string },
-    position: any,
-    style: any
-  }) => ({
-    id: node.id,
-    roadmapId: roadmapId,
-    parentId: roadmapData.edges.find(edge => edge.target === node.id)?.source || null,
-    label: node.data.label,
-    position: node.position,
-    style: node.style,
-  }))
-
-  await db.insert(roadmapNodes).values(nodesToInsert)
-  console.log(`[service]: 9. Roadmap and nodes saved!`)
-
   return document
-}
-
-async function getYouTubeTranscript(url: string): Promise<string> {
-  try {
-    const transcript = await fetchTranscript(url)
-    return transcript
-      .map((segment: any) => decode(decode(segment.text))) 
-      .join(" ")
-  } catch (error: any) {
-    console.error("Error fetching YouTube transcript:", error)
-    throw new Error(`Failed to fetch transcript: ${error.message}`)
-  }
 }
