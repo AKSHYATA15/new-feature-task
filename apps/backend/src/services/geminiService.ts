@@ -55,7 +55,42 @@ ${text}
   }
 }
 
-export async function generateFAQs(text: string) {
+export async function generateFAQs(text: string): Promise<{ question: string, answer: string, explanation: string }[]> {
   console.log("[gemini]: Generating FAQs...")
-  return [] 
+  
+  const prompt = `You are an expert content analyzer. Based on the following transcript, generate 5 insightful "Frequently Asked Questions" (FAQs).
+
+Return your answer ONLY as a valid JSON array of objects, with no other text.
+Each object in the array must have three keys:
+1.  "question": The question (e.g., "What is garbage collection?")
+2.  "answer": A short, one-sentence answer for the "back" of the flashcard (e.g., "It's a process that automatically reclaims memory.")
+3.  "explanation": A more detailed, one-paragraph explanation for the "Show Explanation" button.
+
+Example format:
+[
+  {
+    "question": "What is the main topic?",
+    "answer": "The main topic is X.",
+    "explanation": "X is a concept that involves..."
+  }
+]
+
+Transcript:
+"""
+${text}
+"""`
+
+  try {
+    const result = await model.generateContent(prompt)
+    const response = await result.response
+    const jsonText = response.text()
+    
+    const cleanJson = jsonText.replace(/```json/g, "").replace(/```/g, "").trim()
+    
+    console.log("[gemini]: FAQs generated successfully!")
+    return JSON.parse(cleanJson) 
+  } catch (error) {
+    console.error("Error generating FAQs from Gemini:", error)
+    throw new Error("Failed to generate FAQs")
+  }
 }
