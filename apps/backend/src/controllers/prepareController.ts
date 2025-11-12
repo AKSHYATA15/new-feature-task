@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import * as prepareService from "../services/prepareService"
+import { prepareQueue } from "../services/queueService"
 
 export async function prepareDocument(req: Request, res: Response) {
   try {
@@ -8,17 +9,24 @@ export async function prepareDocument(req: Request, res: Response) {
     if (!sourceUrl || !sourceType) {
       return res.status(400).json({ error: "sourceUrl and sourceType are required" })
     }
+    
+    const newDocument = await prepareService.createDocument(sourceUrl, sourceType)
 
-    const newDocument = await prepareService.processDocument(sourceUrl, sourceType)
+    await prepareQueue.add("process-document", {
+      documentId: newDocument.id,
+      sourceUrl: newDocument.sourceUrl,
+      sourceType: newDocument.sourceType,
+    })
 
-    res.status(200).json({ 
-      message: "Document created and processed successfully.",
+    console.log(`[controller]: Job added to queue for document ID: ${newDocument.id}`)
+
+    res.status(202).json({ 
+      message: "Job accepted. Processing has started.",
       documentId: newDocument.id,
     })
 
   } catch (error: any) {
     console.error("Error in prepareDocument controller:", error)
-    
     res.status(500).json({ 
       error: "Internal server error",
       message: error.message 
