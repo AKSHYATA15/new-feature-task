@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { prepareDocument } from "../controllers/prepareController"
+import { prepareDocument , getDocumentStatus} from "../controllers/prepareController"
 
 const router = Router()
 
@@ -8,5 +8,6 @@ router.get("/health", (req, res) => {
 })
 
 router.post("/prepare", prepareDocument)
+router.get("/prepare/status/:id", getDocumentStatus)
 
 export default router
