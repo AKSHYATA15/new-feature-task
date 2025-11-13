@@ -6,7 +6,6 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
   if (file.mimetype === "application/pdf") {
     cb(null, true)
   } else {
-    // Reject the file
     cb(new Error("Invalid file type, only PDF is allowed!"))
   }
 }
