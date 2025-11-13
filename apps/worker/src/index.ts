@@ -23,16 +23,30 @@ const processor = async (job: any) => {
   const { documentId, sourceUrl, sourceType } = job.data
 
   try {
-    let rawText = ""
+    let rawText : string 
     if (sourceType === "youtube") {
       console.log(`[worker]: 1. Fetching YouTube transcript...`)
       rawText = await getYouTubeTranscript(sourceUrl)
+      await db.insert(transcripts).values({ documentId, fullText: rawText })
+      console.log(`[worker]: 2. Transcript saved!`)
+    } else if (sourceType === "pdf") {
+      console.log(`[worker]: 1. PDF text already processed. Fetching...`)
+      const result = await db.select()
+        .from(transcripts)
+        .where(eq(transcripts.documentId, documentId))
+      
+      if (result.length === 0) {
+        throw new Error(`No transcript found for PDF document ID: ${documentId}`)
+      }
+      if (result[0].fullText === null) {
+        throw new Error(`Transcript for PDF document ID: ${documentId} has null fullText`)
+      }
+      rawText = result[0].fullText
+      console.log(`[worker]: 2. Transcript fetched!`)
+      
     } else {
-      rawText = "PDF processing to be added here"
+      throw new Error(`Unknown sourceType: ${sourceType}`)
     }
-    
-    await db.insert(transcripts).values({ documentId, fullText: rawText })
-    console.log(`[worker]: 2. Transcript saved!`)
 
     const summaryText = await geminiService.generateSummary(rawText)
     await db.insert(summaries).values({ documentId, text: summaryText, modelName: "gemini-2.0-flash" })
@@ -64,31 +78,31 @@ const processor = async (job: any) => {
     explanation: mcq.explanation,
     }))
 
-  await db.insert(mcqs).values(mcqsToInsert)
+    await db.insert(mcqs).values(mcqsToInsert)
     console.log(`[worker]: 5. MCQs saved!`)
 
     const roadmapData = await geminiService.generateRoadmap(rawText)
 
     const newRoadmap = await db.insert(roadmaps).values({
-        documentId: documentId,
-        title: "Generated Roadmap", 
+      documentId: documentId,
     }).returning({ id: roadmaps.id })
     
     const roadmapId = newRoadmap[0].id
 
     const nodesToInsert = roadmapData.nodes.map((node: {
-        id: string,
-        data: { label: string },
-        position: any,
-        style: any
+      id: string,
+      data: { label: string },
+      position: any,
+      style: any
     }) => ({
-        id: node.id,
-        roadmapId: roadmapId,
-        parentId: roadmapData.edges.find(edge => edge.target === node.id)?.source || null,
-        label: node.data.label,
-        position: node.position,
-        style: node.style,
+      id: node.id,
+      roadmapId: roadmapId,
+      parentId: roadmapData.edges.find(edge => edge.target === node.id)?.source || null,
+      label: node.data.label,
+      position: node.position,
+      style: node.style,
     }))
+
     await db.insert(roadmapNodes).values(nodesToInsert)
     console.log(`[worker]: 6. Roadmap saved!`)
 

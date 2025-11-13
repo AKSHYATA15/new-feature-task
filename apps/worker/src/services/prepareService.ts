@@ -6,7 +6,9 @@ import { decode } from "html-entities"
 
 export async function getYouTubeTranscript(url: string): Promise<string> {
   try {
-    const transcript = await fetchTranscript(url)
+    const transcript = await fetchTranscript(url, {
+      lang: "en" 
+    })
     return transcript
       .map((segment: any) => decode(decode(segment.text))) 
       .join(" ")
