@@ -65,6 +65,24 @@ type Roadmap = {
   edges: RoadmapEdge[];
 }
 
+type TranscriptSegment = {
+  text: string;
+  startTime: number;
+  timestamp: string;
+}
+
+type Document = {
+  id: string;
+  sourceType: "pdf" | "youtube";
+  sourceUrl: string | null;
+  title: string | null;
+  status: string;
+}
+
+type PdfData = {
+  base64Content: string;
+}
+
 // --- 2. Update API Fetching Functions ---
 
 const fetchSummary = async (documentId: string): Promise<Summary> => {
@@ -100,6 +118,21 @@ const fetchRoadmap = async (documentId: string): Promise<Roadmap> => {
   }
 }
 
+const fetchDocumentInfo = async (documentId: string): Promise<Document> => {
+  const { data } = await axios.get(`${API_URL}/prepare/document/${documentId}`)
+  return data
+}
+
+const fetchTranscriptSegments = async (documentId: string): Promise<TranscriptSegment[]> => {
+  const { data } = await axios.get(`${API_URL}/prepare/transcript/${documentId}`)
+  return data
+}
+
+const fetchPdfData = async (documentId: string): Promise<PdfData> => {
+  const { data } = await axios.get(`${API_URL}/prepare/pdf/${documentId}`)
+  return data
+}
+
 // --- 3. Update React Query Hooks to use these Types ---
 
 export function useSummary(documentId: string) {
@@ -130,6 +163,30 @@ export function useRoadmap(documentId: string) {
   return useQuery<Roadmap, AxiosError>({
     queryKey: ['roadmap', documentId],
     queryFn: () => fetchRoadmap(documentId),
+    enabled: !!documentId,
+  })
+}
+
+export function useDocumentInfo(documentId: string) {
+  return useQuery<Document, AxiosError>({
+    queryKey: ['document', documentId],
+    queryFn: () => fetchDocumentInfo(documentId),
+    enabled: !!documentId,
+  })
+}
+
+export function useTranscriptSegments(documentId: string) {
+  return useQuery<TranscriptSegment[], AxiosError>({
+    queryKey: ['transcript', documentId],
+    queryFn: () => fetchTranscriptSegments(documentId),
+    enabled: !!documentId,
+  })
+}
+
+export function usePdfData(documentId: string) {
+  return useQuery<PdfData, AxiosError>({
+    queryKey: ['pdf', documentId],
+    queryFn: () => fetchPdfData(documentId),
     enabled: !!documentId,
   })
 }
