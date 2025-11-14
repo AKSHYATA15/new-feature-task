@@ -24,7 +24,7 @@ export default function HomePage() {
           <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3">
             <div className="w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-12 border-b-white transform rotate-90"></div>
           </div>
-          <h1 className="text-2xl font-semibold text-blue-600">AI Prepration with AceInt</h1>
+          <h1 className="text-2xl font-semibold text-blue-600">Interview Prepration with AceInt</h1>
         </div>
 
         {/* Cards Row */}
