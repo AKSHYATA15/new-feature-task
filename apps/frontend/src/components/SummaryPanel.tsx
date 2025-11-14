@@ -17,8 +17,13 @@ import {
   StickyNote
 } from "lucide-react"
 import { RoadmapTab } from "@/components/RoadmapTab"
+import { SummaryTab } from "@/components/SummaryTab"
 
-export function SummaryPanel() {
+interface SummaryPanelProps {
+  documentId: string;
+}
+
+export function SummaryPanel({ documentId }: SummaryPanelProps) {
   return (
     <div className="h-full w-full flex flex-col">
       <Tabs defaultValue="summary" className="w-full h-full flex flex-col">
@@ -53,46 +58,7 @@ export function SummaryPanel() {
           value="summary"
           className="flex-1 overflow-y-auto p-6 text-sm"
         >
-          <div className="space-y-6 text-gray-700 leading-relaxed">
-            <p>
-              This document summarizes key differences between Java interfaces
-              and abstract classes, crucial concepts for object-oriented
-              programming and interview preparation.
-            </p>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2 text-base">
-                1. Java Interfaces
-              </h3>
-              <p className="mb-2">
-                <strong>Definition:</strong> A blueprint for a class, defining
-                abstract and static methods. Since Java 8, interfaces can
-                also have default methods.
-              </p>
-              <p className="mb-2">
-                <strong>Method Characteristics:</strong> By default, methods
-                are <strong>public</strong> and <strong>abstract</strong>.
-                Variables are <strong>public</strong>, <strong>static</strong>,
-                and <strong>final</strong>.
-              </p>
-              <p>
-                <strong>Implementation:</strong> A class implementing an interface
-                must provide implementations for all abstract methods.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2 text-base">
-                2. Abstract Classes
-              </h3>
-              <p className="mb-2">
-                <strong>Definition:</strong> Can contain both abstract (methods
-                without implementation) and concrete (implemented) methods.
-              </p>
-              <p>
-                <strong>Inheritance:</strong> A class can extend only one
-                abstract class.
-              </p>
-            </div>
-          </div>
+          <SummaryTab documentId={documentId} />
         </TabsContent>
 
         <TabsContent value="chat" className="flex-1 overflow-hidden">
@@ -100,15 +66,15 @@ export function SummaryPanel() {
         </TabsContent>
 
         <TabsContent value="faq" className="flex-1 overflow-y-auto p-6">
-          <FAQTab />
+          <FAQTab documentId={documentId} />
         </TabsContent>
 
         <TabsContent value="mcq" className="flex-1 overflow-hidden">
-          <MCQTab />
+          <MCQTab documentId={documentId} />
         </TabsContent>
         
         <TabsContent value="roadmap" className="flex-1 overflow-y-auto p-6">
-          <RoadmapTab />
+          <RoadmapTab documentId={documentId} />
         </TabsContent>
 
         <TabsContent value="notes" className="flex-1 overflow-y-auto p-6">
