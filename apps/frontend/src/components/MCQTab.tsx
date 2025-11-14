@@ -17,8 +17,11 @@ const mcqData = {
   ],
   correctAnswer: "B"
 }
+interface MCQTabProps {
+  documentId: string;
+}
 
-export function MCQTab() {
+export function MCQTab({ documentId }: MCQTabProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isSubmitted, setIsSubmitted] = useState(false)
 

@@ -33,7 +33,12 @@ const allEdges: Edge[] = [
 
 const initialNodes = allNodes.filter(n => n.id === '1');
 
-export function RoadmapTab() {
+interface RoadmapTabProps {
+  documentId: string;
+}
+
+// 2. Accept the props
+export function RoadmapTab({ documentId }: RoadmapTabProps) {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>([]);
 
