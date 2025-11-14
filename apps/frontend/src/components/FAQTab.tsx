@@ -8,8 +8,11 @@ const faqData = {
   answer: "Garbage collection identifies and removes objects no longer in use, freeing up memory. It happens automatically!",
   explanation: "Java's garbage collection is like an automatic cleaner. It identifies objects that your program doesn't need anymore (like variables no longer referenced) and reclaims the memory they were using. This prevents memory leaks and keeps your application running smoothly. It runs in the background, so you typically don't need to worry about manually managing memory!"
 }
+interface FAQTabProps {
+  documentId: string;
+}
 
-export function FAQTab() {
+export function FAQTab({ documentId }: FAQTabProps) {
   const [isFlipped, setIsFlipped] = useState(false)
   const [showExplanation, setShowExplanation] = useState(false)
 

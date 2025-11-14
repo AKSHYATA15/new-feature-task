@@ -9,11 +9,17 @@ import { useRef } from "react"
 import TranscriptionViewer from "@/components/TranscriptionViewer"
 import { Sidebar } from "@/components/Sidebar"
 
-function AppLayout() {
+interface AppLayoutProps {
+  documentId: string;
+}
+
+export function AppLayout({ documentId }: AppLayoutProps) {
   const videoPlayerRef = useRef<VideoPlayerRef>(null)
+
   const handleSeekTo = (seconds: number) => {
     videoPlayerRef.current?.seekTo(seconds)
   }
+
   return (
     <div className="h-screen w-full flex overflow-hidden bg-gray-100">
       <Sidebar />
@@ -53,7 +59,7 @@ function AppLayout() {
 
         {/* Right Panel */}
         <ResizablePanel className="min-h-0" minSize={30} defaultSize={55}>
-          <SummaryPanel />
+          <SummaryPanel documentId={documentId} />
         </ResizablePanel>
 
       </ResizablePanelGroup>
@@ -61,5 +67,3 @@ function AppLayout() {
     </div>
   )
 }
-
-export default AppLayout
