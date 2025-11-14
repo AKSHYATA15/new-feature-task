@@ -173,15 +173,18 @@ The JSON object must have two top-level keys: "nodes" and "edges".
     * "source": The "id" of the parent node.
     * "target": The "id" of the child node.
 
-**Instructions for Content:**
-* The root node (id: "1") should be the main title of the transcript.
-* Level 2 nodes should be the main headings.
-* Level 3 nodes should be the key points under those headings.
-* Assign "borderColor" based on the level:
-    * Level 1: "#8A2BE2" (Purple)
-    * Level 2: "#4169E1" (Blue)
-    * Level 3: "#2E8B57" (Green)
-* Arrange the nodes in a clear top-down hierarchy with appropriate "x" and "y" positions.
+**Node Placement Logic (CRITICAL):**
+* **Vertical Placement = Depth/Hierarchy:**
+    * Use this when going deeper into a topic (parent → child), showing sub-steps, or representing a sequence.
+    * **Rule:** "This is a detail or subtask OF the node above."
+    * **Layout:** Give a vertical gap of 150px between levels (e.g., parent at 'y: 50', child at 'y: 200').
+* **Horizontal Placement = Alternatives/Parallel:**
+    * Use this for nodes at the same level in the hierarchy (siblings), parallel options, or multiple branches.
+    * **Rule:** "These are different options AT THE SAME LEVEL."
+    * **Layout:** Nodes at the same level must have the *same 'y' coordinate*. Space them 250px apart horizontally (e.g., \`{"x": 0, "y": 200}\`, \`{"x": 250, "y": 200}\`).
+* **Visuals & Spacing:**
+    * **Styling:** Level 1 (Top): Purple \`"#8A2BE2"\`, Level 2: Blue \`"#4169E1"\`, Level 3+: Green \`"#2E8B57"\`.
+    * **Rules:** Ensure generous whitespace and NO node overlap.
 
 Analyze this transcript to generate the roadmap:
 """
