@@ -2,6 +2,8 @@ import { Request, Response } from "express"
 import * as prepareService from "../services/prepareService"
 import { prepareQueue } from "../services/queueService"
 import { PDFParse } from "pdf-parse"
+import { db } from "../db/client"
+import { pdf_store } from "../db/schema/main"
 
 export async function preparePdf(req: Request, res: Response) {
   try {
@@ -26,6 +28,14 @@ export async function preparePdf(req: Request, res: Response) {
     }
 
     const newDocument = await prepareService.createPdfDocument(rawText, documentTitle)
+
+    const base64Content = file.buffer.toString('base64')
+    
+    await db.insert(pdf_store).values({
+      documentId: newDocument.id,
+      base64Content: base64Content
+    })
+    console.log(`[controller]: PDF base64 content saved to pdf_store!`)
     
     await prepareQueue.add("process-document", {
       documentId: newDocument.id,

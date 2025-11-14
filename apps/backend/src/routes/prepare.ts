@@ -1,5 +1,8 @@
 import { Router } from "express"
-import { getDocumentStatus, getSummary, getFAQs, getMCQs, getRoadmap } from "../controllers/dataController"
+import { getDocumentStatus, getSummary, getFAQs, getMCQs, getRoadmap, 
+    getDocumentInfo, 
+    getTranscriptSegments,
+    getPdfData } from "../controllers/dataController"
 import { prepareYouTubeUrl } from "../controllers/youtubeController"
 import { preparePdf } from "../controllers/pdfController"
 import { upload } from "../middleware/upload"
@@ -19,5 +22,10 @@ router.get("/prepare/summary/:documentId", getSummary)
 router.get("/prepare/faqs/:documentId", getFAQs)
 router.get("/prepare/mcqs/:documentId", getMCQs)
 router.get("/prepare/roadmap/:documentId", getRoadmap)
+
+// ---LEFT-PANEL ENDPOINTS ---
+router.get("/prepare/document/:documentId", getDocumentInfo)
+router.get("/prepare/transcript/:documentId", getTranscriptSegments)
+router.get("/prepare/pdf/:documentId", getPdfData)
 
 export default router
