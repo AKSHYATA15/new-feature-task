@@ -1,8 +1,10 @@
 import express from "express"
 import prepareRouter from "./routes/prepare"
+import cors from "cors"
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 
 app.get("/", (req, res) => {
