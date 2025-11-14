@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { File, Youtube, Globe } from 'lucide-react'
 import { UploadModal } from '@/components/UploadModal'
+import { Sidebar } from '@/components/Sidebar'
 
 export type UploadType = "pdf" | "youtube" | "website" | null
 
@@ -15,6 +16,7 @@ export default function HomePage() {
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-gray-50">
+      <Sidebar />
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center pt-16 px-8">
         {/* Header */}
