@@ -173,18 +173,34 @@ The JSON object must have two top-level keys: "nodes" and "edges".
     * "source": The "id" of the parent node.
     * "target": The "id" of the child node.
 
-**Node Placement Logic (CRITICAL):**
-* **Vertical Placement = Depth/Hierarchy:**
-    * Use this when going deeper into a topic (parent → child), showing sub-steps, or representing a sequence.
-    * **Rule:** "This is a detail or subtask OF the node above."
-    * **Layout:** Give a vertical gap of 150px between levels (e.g., parent at 'y: 50', child at 'y: 200').
-* **Horizontal Placement = Alternatives/Parallel:**
-    * Use this for nodes at the same level in the hierarchy (siblings), parallel options, or multiple branches.
-    * **Rule:** "These are different options AT THE SAME LEVEL."
-    * **Layout:** Nodes at the same level must have the *same 'y' coordinate*. Space them 250px apart horizontally (e.g., \`{"x": 0, "y": 200}\`, \`{"x": 250, "y": 200}\`).
-* **Visuals & Spacing:**
-    * **Styling:** Level 1 (Top): Purple \`"#8A2BE2"\`, Level 2: Blue \`"#4169E1"\`, Level 3+: Green \`"#2E8B57"\`.
-    * **Rules:** Ensure generous whitespace and NO node overlap.
+**Layout Rules (CRITICAL - Follow Precisely):**
+
+1. **Vertical Spacing (Parent → Child / Hierarchy):**
+   - Use when: showing sub-concepts, details, steps, or "is part of" relationships
+   - Y-axis increment: 150px per level
+   - Example: Parent y=0, Child y=150, Grandchild y=300
+
+2. **Horizontal Spacing (Siblings / Parallel Concepts):**
+   - Use when: multiple options, branches, or peer-level concepts
+   - SAME y-coordinate for all siblings
+   - X-axis spacing: 250px minimum between nodes
+   - Example: Sibling1 (x=0, y=150), Sibling2 (x=250, y=150), Sibling3 (x=500, y=150)
+
+3. **Color Coding by Depth:**
+   - Level 1 (root): "#8A2BE2" (purple)
+   - Level 2: "#4169E1" (blue)
+   - Level 3+: "#2E8B57" (green)
+
+4. **Collision Prevention:**
+   - Ensure 200+ pixel clearance between any two nodes
+   - Center root node: x=400
+   - Balance siblings symmetrically around parent x-coordinate
+
+**Hierarchy Best Practices:**
+- Start with 1 root node (the main topic)
+- Maximum 5-7 direct children per parent
+- Keep depth ≤ 4 levels when possible
+- Group related concepts as siblings under a common parent
 
 Analyze this transcript to generate the roadmap:
 """

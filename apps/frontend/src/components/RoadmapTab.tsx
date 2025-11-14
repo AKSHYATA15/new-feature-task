@@ -1,5 +1,5 @@
-import React from 'react'
-import { useRoadmap } from '../hooks/useDocumentData' // 1. Import the hook
+import React, { useMemo } from 'react'
+import { useRoadmap } from '../hooks/useDocumentData' 
 import { Loader2, AlertTriangle } from 'lucide-react'
 import {
   ReactFlow,
@@ -7,6 +7,7 @@ import {
   Background,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
+import { fixOverlaps } from '../lib/layoutFix'
 
 interface RoadmapTabProps {
   documentId: string;
@@ -14,6 +15,13 @@ interface RoadmapTabProps {
 
 export function RoadmapTab({ documentId }: RoadmapTabProps) {
   const { data, isLoading, error } = useRoadmap(documentId)
+  const layoutedElements = useMemo(() => {
+    if (data?.nodes && data?.edges) {
+      const fixedNodes = fixOverlaps(data.nodes )
+      return { nodes: fixedNodes, edges: data.edges }
+    }
+    return null
+  }, [data])
 
   if (isLoading) {
     return (
@@ -35,8 +43,8 @@ export function RoadmapTab({ documentId }: RoadmapTabProps) {
   return (
     <div className="w-full h-full">
       <ReactFlow
-        nodes={data.nodes}
-        edges={data.edges}
+        nodes={layoutedElements?.nodes ?? []}
+        edges={layoutedElements?.edges ?? []}
         nodesDraggable={false}
         nodesConnectable={false}
         fitView
