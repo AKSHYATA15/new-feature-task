@@ -2,10 +2,10 @@ import "dotenv/config"
 import { Worker } from "bullmq"
 import IORedis from "ioredis"
 import { db } from "./db/client"
-import { documents, transcripts, summaries, faqs, mcqs, roadmaps, roadmapNodes } from "./db/schema/main"
+import { documents, transcripts, summaries, faqs, mcqs, roadmaps, roadmapNodes , transcript_segments } from "./db/schema/main"
 import { eq } from "drizzle-orm"
 import * as geminiService from "./services/geminiService"
-import { getYouTubeTranscript } from "./services/prepareService" 
+import { getYouTubeTranscript, saveYouTubeTranscriptSegments } from "./services/prepareService" 
 
 if (!process.env.REDIS_URL) {
   throw new Error("REDIS_URL is not set in .env file")
@@ -26,11 +26,16 @@ const processor = async (job: any) => {
     let rawText : string 
     if (sourceType === "youtube") {
       console.log(`[worker]: 1. Fetching YouTube transcript...`)
+
       rawText = await getYouTubeTranscript(sourceUrl)
       await db.insert(transcripts).values({ documentId, fullText: rawText })
+
       console.log(`[worker]: 2. Transcript saved!`)
+      saveYouTubeTranscriptSegments(sourceUrl, documentId)
+
     } else if (sourceType === "pdf") {
       console.log(`[worker]: 1. PDF text already processed. Fetching...`)
+
       const result = await db.select()
         .from(transcripts)
         .where(eq(transcripts.documentId, documentId))
