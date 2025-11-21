@@ -12,8 +12,15 @@ export async function generateSummary(text: string) {
   
   const prompt = `
 You are an expert summarizer and technical writer. Your task is to analyze the following document transcript and generate a structured, professional summary.
+
+**CRITICAL INSTRUCTION:** You **must** generate a summary that covers the **full breadth** of the document, including key topics from the **beginning, middle, and end**. Do not just summarize the first few paragraphs.
+
+**PROCESS:**
+1.  First, mentally identify all the main sections or key topics in the full transcript.
+2.  Then, create a summary that is representative of *all* these different sections.
+
 Focus *only* on the core educational content. Ignore any ads, promotions, self-promotion ("my course..."), or calls to action ("like and subscribe").
-Your explanations for the correct answer must be confident, direct, and factual.
+Your explanations for summary must be confident, direct, and factual.
 **Do not** use phrases like "According to the transcript...", "The text states that...", or any other timid, referencing language.
 
 **Your output MUST follow this exact format:**
@@ -62,7 +69,14 @@ export async function generateFAQs(text: string): Promise<{ question: string, an
   console.log("[gemini]: Generating FAQs...")
   
   const prompt = `You are an expert content analyzer. Based on the following transcript, generate 5 insightful "Frequently Asked Questions" (FAQs).
-  Focus *only* on the core educational content. Ignore any ads, promotions, self-promotion ("my course..."), or calls to action ("like and subscribe").
+
+**CRITICAL INSTRUCTION:** You **must** generate questions that cover the **full breadth** of the document, including topics from the **beginning, middle, and end**. Do not just pull the first 5 questions you find from the start of the text.
+
+**PROCESS:**
+1.  First, mentally identify the 3-5 main sections or key topics in the transcript.
+2.  Then, generate FAQs that are representative of *all* these different sections.
+
+Focus *only* on the core educational content. Ignore any ads, promotions, self-promotion ("my course..."), or calls to action ("like and subscribe").
 Your explanations for the correct answer must be confident, direct, and factual.
 **Do not** use phrases like "According to the transcript...", "The text states that...", or any other timid, referencing language.
 
@@ -106,7 +120,13 @@ export async function generateMCQs(text: string) {
 
   const prompt = `You are an expert quiz creator. Your task is to generate 5 multiple-choice questions (MCQs) to test a user's understanding of the provided text.
 
-  Your explanations for the correct answer must be confident, direct, and factual.
+**CRITICAL INSTRUCTION:** You **must** generate questions that cover the **full breadth** of the document, including topics from the **beginning, middle, and end**. Do not just pull the first 5 questions you find from the start of the text.
+
+**PROCESS:**
+1.  First, mentally identify the 3-5 main sections or key topics in the transcript.
+2.  Then, generate MCQs that are representative of *all* these different sections.
+
+Your explanations for the correct answer must be confident, direct, and factual.
 **Do not** use phrases like "According to the transcript...", "The text states that...", or any other timid, referencing language.
 
 Focus *only* on the core educational content. Ignore any ads, promotions, self-promotion ("my course..."), or calls to action ("like and subscribe").
@@ -196,9 +216,9 @@ The JSON object must have two top-level keys: "nodes" and "edges".
    - Center root node: x=400
    - Balance siblings symmetrically around parent x-coordinate
 
-**Hierarchy Best Practices:**
+**Hierarchy Best Practices: [MUST FOLLOW]**
 - Start with 1 root node (the main topic)
-- Maximum 5-7 direct children per parent
+- Maximum 4-6 direct children per parent
 - Keep depth ≤ 4 levels when possible
 - Group related concepts as siblings under a common parent
 
