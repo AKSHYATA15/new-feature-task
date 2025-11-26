@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { File, Youtube, Globe } from 'lucide-react'
 import { UploadModal } from '@/components/UploadModal'
 import { Sidebar } from '@/components/Sidebar'
+import { RecentUrl } from '@/components/RecentUrl'
 
 export type UploadType = "pdf" | "youtube" | "website" | null
 
@@ -15,10 +16,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-gray-50">
+    <div className="min-h-screen w-full bg-gray-50 flex">
       <Sidebar />
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center pt-16 px-8">
+      <div className="flex-1 flex flex-col items-center pt-16 px-8 pb-16 overflow-y-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -87,6 +88,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+          <RecentUrl />
       </div>
 
       {/* The Modal Dialog */}
