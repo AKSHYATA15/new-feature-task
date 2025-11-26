@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FileText, Youtube, Clock, Play, List } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import * as pdfjsLib from 'pdfjs-dist'
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
 
 export interface RecentItem {
   id: string
@@ -34,7 +38,7 @@ const dummyRecents: RecentItem[] = [
     title: "System Design Interview Guide",
     createdAt: "24/11/2025, 09:15:00 am",
     status: "completed",
-    previewUrl: "https://aceint-candidates.s3.ap-south-1.amazonaws.com/documents/sample.pdf"
+    previewUrl: "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
   },
   {
     id: "b2c3d4e5-f6g7-h8i9-j0k1-l2m3n4o5p6q7",
@@ -64,6 +68,8 @@ const dummyRecents: RecentItem[] = [
 
 export function RecentUrl() {
   const navigate = useNavigate()
+  const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
+
   const handleItemClick = (id: string) => {
     navigate(`/prepration/content/${id}`)
   }
@@ -76,8 +82,47 @@ export function RecentUrl() {
         return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`
       }
     }
+    if (item.type === 'document' && pdfThumbnails[item.id]) {
+      return pdfThumbnails[item.id]
+    }
     return undefined
   }
+
+  const generatePdfThumbnail = async (url: string, itemId: string) => {
+    try {
+      const loadingTask = pdfjsLib.getDocument(url)
+      const pdf = await loadingTask.promise
+      const page = await pdf.getPage(1)
+      
+      const viewport = page.getViewport({ scale: 1.5 })
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+      
+      if (!context) return
+      
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+      
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+        canvas: canvas
+      }).promise
+      
+      const thumbnail = canvas.toDataURL('image/jpeg', 0.8)
+      setPdfThumbnails(prev => ({ ...prev, [itemId]: thumbnail }))
+    } catch (error) {
+      console.error('Error generating PDF thumbnail:', error)
+    }
+  }
+
+  useEffect(() => {
+    dummyRecents.forEach(item => {
+      if (item.type === 'document' && item.previewUrl) {
+        generatePdfThumbnail(item.previewUrl, item.id)
+      }
+    })
+  }, [])
 
   const sortedRecents = [...dummyRecents].sort((a, b) => {
     const dateA = new Date(a.createdAt.replace(/(\d{2})\/(\d{2})\/(\d{4}), (.+)/, '$2/$1/$3 $4'))
