@@ -63,8 +63,8 @@ export function SummaryTab({ documentId }: SummaryTabProps) {
         /^-\s*Key Point:/i,
         /^\*\*Key Point:\*\*/i,
         /^Key Point:/i,
-        /^-\s*\*\*[^:]+:\*\*/,  // Catches "- **Any text:**"
-        /^-\s+\S/  // Fallback: any bullet point
+        /^-\s*\*\*[^:]+:\*\*/,  
+        /^-\s+\S/  
       ]
       
       const isKeyPoint = keyPointPatterns.some(pattern => pattern.test(line))

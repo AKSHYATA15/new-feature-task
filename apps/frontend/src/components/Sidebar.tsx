@@ -13,7 +13,7 @@ import {
 
 export function Sidebar() {
   return (
-    <div className="w-60 shrink-0 bg-white text-gray-700 flex flex-col border-r border-gray-200">
+    <div className="w-60 shrink-0 bg-white text-gray-700 flex flex-col border-r border-gray-200 h-screen sticky top-0">
       <div className="p-4 font-bold text-blue-600 text-lg border-b border-gray-200 flex items-center">
         <span className="text-2xl mr-2"></span> {/* You can replace this with a logo image if needed */}
         AceInt
