@@ -17,6 +17,7 @@
   "description": "",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@rishabh794/llm-cost-logger": "^1.0.4",
     "bullmq": "^5.63.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",

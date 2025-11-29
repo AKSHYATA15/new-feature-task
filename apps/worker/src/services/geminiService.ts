@@ -1,10 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
+import { trackCost } from "@rishabh794/llm-cost-logger";
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error("GEMINI_API_KEY is not set. Did you load .env in server.ts?")
 }
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+const genAI = trackCost(new GoogleGenerativeAI(process.env.GEMINI_API_KEY));
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
 
 export async function generateSummary(text: string) {
